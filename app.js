@@ -9,7 +9,16 @@ const exphbs = require("express-handlebars");
 app.use(express.static("public"));
 // routes setting
 app.get("/", (req, res) => {
-  res.render("index");
+  // create a variable to store movieOne
+  const movieOne = {
+    id: 1,
+    title: "Here is Movie Title",
+    image:
+      "https://movie-list.alphacamp.io/posters/c9XxwwhPHdaImA2f1WEfEsbhaFB.jpg",
+  };
+
+  // past the movie data into 'index' partial template
+  res.render("index", { movie: movieOne });
 });
 
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
