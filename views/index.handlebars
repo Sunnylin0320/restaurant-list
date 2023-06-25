@@ -5,7 +5,7 @@
     <div class="col-12">
       <form action="/">
         <div class="input-group mb-3">
-          <input type="text" name="q" class="form-control" placeholder="Enter movie name to search..." aria-label="Movie Name..."
+          <input type="text" name="q" class="form-control" placeholder="Enter restaurant name to search..." aria-label="Restaurant Name..."
             aria-describedby="search-button">
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="submit" id="search-button">Search</button>
@@ -15,18 +15,21 @@
     </div>
   </div>
   <!-- movie list -->
- <div class="row" id="data-panel">
-    {{#each movies}}
-      <div class="col-sm-3">
-        <a href="/{{this.id}}" class="text-secondary">
-          <div class="card mb-2">
-            <img class="card-img-top" src="{{this.image}}" alt="Card image cap">
-            <div class="card-body movie-item-body">
-              <h6 class="card-title">{{this.title}}</h6>
-            </div>
+ 
+  <div class="row" id="data-panel">
+    {{#each restaurants}}
+    <div class="col-sm-3">
+      <a href="/restaurants/{{this.id}}" class="text-secondary">
+        <div class="card mb-2">
+          <img class="card-img-top" src="{{this.image}}" alt="Card image cap">
+          <div class="card-body restaurant-item-body">
+            <h6 class="card-title">{{this.name}}</h6>
           </div>
-        </a>
-      </div>
+        </div>
+      </a>
+    </div>
     {{/each}}
+  </div>
+</div>
   </div>
 </div>
