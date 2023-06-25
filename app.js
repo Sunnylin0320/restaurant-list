@@ -5,6 +5,8 @@ const port = 3000;
 
 const exphbs = require("express-handlebars");
 
+//提供靜態檔案
+app.use(express.static("public"));
 // routes setting
 app.get("/", (req, res) => {
   res.render("index");
