@@ -1,20 +1,16 @@
 <!-- ./views/index.handlebars -->
 <div class="container mt-5">
   <!-- search bar -->
-  <div class="row" id="search-bar">
-    <div class="col-12">
-      <form action="/">
-        <div class="input-group mb-3">
-          <input type="text" name="q" class="form-control" placeholder="Enter restaurant name to search..." aria-label="Restaurant Name..."
-            aria-describedby="search-button">
-          <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="submit" id="search-button">Search</button>
-          </div>
-        </div>
-      </form>
+  <form action="/search">
+  <div class="input-group mb-3">
+    <input type="text" name="keyword" class="form-control" placeholder="Enter restaurant name to search..." aria-label="Restaurant Name..."
+      value="{{keyword}}" aria-describedby="search-button">
+    <div class="input-group-append">
+      <button class="btn btn-outline-secondary" type="submit" id="search-button">Search</button>
     </div>
   </div>
-  <!-- movie list -->
+</form>
+  <!-- restaurant list -->
  
   <div class="row" id="data-panel">
     {{#each restaurants}}
