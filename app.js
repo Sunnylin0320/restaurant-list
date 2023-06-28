@@ -69,6 +69,18 @@ app.post("/restaurants", (req, res) => {
     .then(() => res.redirect("/")) // 新增完成後導回首頁
     .catch((error) => console.log(error));
 });
+
+app.get("/restaurants/:id", (req, res) => {
+  const id = req.params.id;
+  return Restaurant.findById(id)
+    .lean()
+    .then((restaurant) => res.render("show", { restaurant }))
+    .catch((error) => console.log(error));
+});
+
+
+
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
