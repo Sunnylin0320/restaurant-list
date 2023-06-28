@@ -37,15 +37,19 @@ db.once('open', () => {
 //提供靜態檔案
 app.use(express.static("public"));
 // routes setting
-
+//瀏覽所有restaurant
 app.get("/", (req, res) => {
-  // past the restaurant data into 'index' partial template
-
-  Restaurant.find()
-    .lean()
-    .then((restaurants) => res.render("index", { restaurants }))
+  Restaurant.find() // 取出 Restaurant model 裡的所有資料
+    .lean() // 把 Mongoose 的 Model 物件轉換成乾淨的 JavaScript 資料陣列
+    .then((restaurants) => res.render("index", { restaurants })) // 將資料傳給 index 樣板
     .catch((error) => console.error(error));
 });
+
+//Create 
+app.get("/restaurants/new", (req, res) => {
+  return res.render("new");
+});
+
 
 
 app.get("/restaurants/:restaurant_id", (req, res) => {
@@ -78,6 +82,25 @@ app.get("/restaurants/:id", (req, res) => {
     .catch((error) => console.log(error));
 });
 
+app.get("/restaurants/:id/edit", (req, res) => {
+  const id = req.params.id;
+  return Restaurant.findById(id)
+    .lean()
+    .then((restaurant) => res.render("edit", { restaurant }))
+    .catch((error) => console.log(error));
+});
+
+app.post("/restaurants/:id/edit", (req, res) => {
+  const id = req.params.id;
+  const name = req.body.name;
+  return Restaurant.findById(id)
+    .then((restaurant) => {
+      restaurant.name = name;
+      return restaurant.save();
+    })
+    .then(() => res.redirect(`/restaurants/${id}`))
+    .catch((error) => console.log(error));
+});
 
 
 
