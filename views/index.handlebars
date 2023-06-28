@@ -19,22 +19,10 @@
 
   <!-- restaurant list -->
  
-  <div class="row" id="data-panel">
-    {{#each restaurants}}
-    <div class="col-sm-3">
-      <a href="/restaurants/{{this.id}}" class="text-secondary">
-        <div class="card mb-2">
-          <img class="card-img-top" src="{{this.image}}" alt="Card image cap">
-          <div class="card-body restaurant-item-body">
-            <h6 class="card-title">{{this.name}}</h6>
-            <h6 class="card-categoty">{{this.category}}</h6>
-            <h6 class="card-rating">{{this.rating}}</h6>
-          </div>
-        </div>
-      </a>
-    </div>
-    {{/each}}
-  </div>
-</div>
-  </div>
-</div>
+ <ul>
+  {{#each restaurants}}
+    <li>
+      {{this.name}}
+    </li>
+  {{/each}}
+</ul>

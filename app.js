@@ -14,6 +14,12 @@ mongoose.connect(process.env.MONGODB_URI, {
   useUnifiedTopology: true,
 });
 
+const port = 3000;
+
+const exphbs = require("express-handlebars");
+const Restaurant = require("./models/restaurant");
+const restaurantList = require("./restaurant.json");
+
 // 取得資料庫連線狀態
 const db = mongoose.connection
 // 連線異常
@@ -25,10 +31,7 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 
-const port = 3000;
 
-const exphbs = require("express-handlebars");
-const restaurantList = require("./restaurant.json");
 
 //提供靜態檔案
 app.use(express.static("public"));
@@ -36,7 +39,11 @@ app.use(express.static("public"));
 
 app.get("/", (req, res) => {
   // past the restaurant data into 'index' partial template
-  res.render("index", { restaurants: restaurantList.results });
+
+  Restaurant.find()
+    .lean()
+    .then((restaurants) => res.render("index", { restaurants }))
+    .catch((error) => console.error(error));
 });
 
 
