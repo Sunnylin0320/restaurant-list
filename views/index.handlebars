@@ -18,26 +18,28 @@
 </div>
 
   <!-- restaurant list -->
-
-
-<a href="./restaurants/new">Create</a>
-<ul>
-  {{#each restaurants}}
-    <li>
-      {{this.name}}
-      <div class="col-sm-3">
-      <a href="/restaurants/{{this.id}}" class="text-secondary">
-        <div class="card mb-2">
-          <img class="card-img-top" src="{{this.image}}" alt="Card image cap">
-          <div class="card-body restaurant-item-body">
-            <h6 class="card-title">{{this.name}}</h6>
+  <div class="row">
+    {{#each restaurants}}
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <a href="/restaurants/{{this.id}}" class="text-secondary">
+          <div class="card">
+            <img class="card-img-top" src="{{this.image}}" alt="Card image cap">
+            <div class="card-body restaurant-item-body">
+              <h6 class="card-title">{{this.name}}</h6>
+            </div>
           </div>
+        </a>
+        <div class="d-flex justify-content-around mt-2">
+          <a href="./restaurants/{{ this._id }}">detail</a>
+          <a href="./restaurants/{{ this._id }}/edit">edit</a>
+          <form action="./restaurants/{{ this._id }}/delete" method="POST" style="display: inline;">
+            <button type="submit">delete</button>
+          </form>
         </div>
-      </a>
-    </div>
-      <a href="./restaurants/{{ this._id }}">detail</a>
-      <a href="./todos/{{ this._id }}/edit">edit</a>
-    </li>
-  {{/each}}
-</ul>
-
+      </div>
+      {{#if (eq @index 3)}} <!-- 每列四個餐廳 -->
+        </div><div class="row">
+      {{/if}}
+    {{/each}}
+  </div>
+</div>

@@ -1,12 +1,18 @@
 // require packages used in the project
 const express = require("express");
 const exphbs = require("express-handlebars");
+const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const handlebars = require("handlebars");
+const seed = require("./restaurant.json");
+
+handlebars.registerHelper("eq", function (a, b) {
+  return a === b;
+});
 
 const Restaurant = require("./models/restaurant");
 const app = express();
-const restaurantList = require("./restaurant.json");
 
 
 
@@ -20,7 +26,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   useUnifiedTopology: true,
 });
 
-
+//建立伺服器參數
 const port = 3000;
 
 
@@ -39,15 +45,15 @@ db.once('open', () => {
 
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
-app.use(express.urlencoded({ extended: true }));
-
-
-
-
 //提供靜態檔案
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
+
+
+
 // routes setting
-//瀏覽所有restaurant
+//設定index首頁路由
 app.get("/", (req, res) => {
   Restaurant.find() // 取出 Restaurant model 裡的所有資料
     .lean() // 把 Mongoose 的 Model 物件轉換成乾淨的 JavaScript 資料陣列
@@ -55,8 +61,17 @@ app.get("/", (req, res) => {
     .catch((error) => console.error(error));
 });
 
+//搜尋功能
+app.get("/search", (req, res) => {
+  const keyword = req.query.keyword;
+  const restaurants = seed.results.filter((restaurant) => {
+    return restaurant.name.toLowerCase().includes(keyword.toLowerCase());
+  });
+  res.render("index", { restaurants: restaurants, keyword: keyword });
+});
 
-//Create 
+
+//Create Route
 app.get("/restaurants/new", (req, res) => {
   return res.render("new");
 });
@@ -70,25 +85,7 @@ app.post("/restaurants", (req, res) => {
 });
 
 
-
-
-app.get("/restaurants/:restaurant_id", (req, res) => {
-  const restaurant = restaurantList.results.find(
-    (restaurant) => restaurant.id.toString() === req.params.restaurant_id
-  );
-  res.render("show", { restaurant: restaurant });
-});
-
-app.get("/search", (req, res) => {
-  const keyword = req.query.keyword;
-  const restaurants = restaurantList.results.filter((restaurant) => {
-    return restaurant.name.toLowerCase().includes(keyword.toLowerCase());
-  });
-  res.render("index", { restaurants: restaurants, keyword: keyword });
-});
-
-
-
+//show Route
 app.get("/restaurants/:id", (req, res) => {
   const id = req.params.id;
   return Restaurant.findById(id)
@@ -97,6 +94,11 @@ app.get("/restaurants/:id", (req, res) => {
     .catch((error) => console.log(error));
 });
 
+
+
+
+
+// edit Route
 app.get("/restaurants/:id/edit", (req, res) => {
   const id = req.params.id;
   return Restaurant.findById(id)
@@ -106,7 +108,7 @@ app.get("/restaurants/:id/edit", (req, res) => {
 });
 
 
-
+//edit 功能
 app.post("/restaurants/:id/edit", (req, res) => {
   const id = req.params.id;
   const name = req.body.name;
@@ -116,6 +118,15 @@ app.post("/restaurants/:id/edit", (req, res) => {
       return restaurant.save();
     })
     .then(() => res.redirect(`/restaurants/${id}`))
+    .catch((error) => console.log(error));
+});
+
+//delete路由
+app.post("/restaurants/:id/delete", (req, res) => {
+  const id = req.params.id;
+  return Restaurant.findById(id)
+    .then((restaurant) => restaurant.remove())
+    .then(() => res.redirect("/"))
     .catch((error) => console.log(error));
 });
 
