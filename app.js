@@ -1,25 +1,28 @@
 // require packages used in the project
 const express = require("express");
+const exphbs = require("express-handlebars");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+
+const Restaurant = require("./models/restaurant");
+const app = express();
+const restaurantList = require("./restaurant.json");
+
+
 
 // 加入這段 code, 僅在非正式環境時, 使用 dotenv
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
-
-const app = express();
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
+
 const port = 3000;
 
-const exphbs = require("express-handlebars");
-const bodyParser = require("body-parser");
-const Restaurant = require("./models/restaurant");
-const restaurantList = require("./restaurant.json");
 
 // 取得資料庫連線狀態
 const db = mongoose.connection
@@ -34,6 +37,13 @@ db.once('open', () => {
 
 
 
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+app.use(express.urlencoded({ extended: true }));
+
+
+
+
 //提供靜態檔案
 app.use(express.static("public"));
 // routes setting
@@ -45,10 +55,20 @@ app.get("/", (req, res) => {
     .catch((error) => console.error(error));
 });
 
+
 //Create 
 app.get("/restaurants/new", (req, res) => {
   return res.render("new");
 });
+//Create 功能：資料庫新增資料
+
+app.post("/restaurants", (req, res) => {
+  const name = req.body.name; // 從 req.body 拿出表單裡的 name 資料
+  return Restaurant.create({ name })
+    .then(() => res.redirect("/"))
+    .catch((err) => console.log(err));
+});
+
 
 
 
@@ -67,12 +87,7 @@ app.get("/search", (req, res) => {
   res.render("index", { restaurants: restaurants, keyword: keyword });
 });
 
-app.post("/restaurants", (req, res) => {
-  const name = req.body.name; // 從 req.body 拿出表單裡的 name 資料
-  return Restaurant.create({ name }) // 存入資料庫
-    .then(() => res.redirect("/")) // 新增完成後導回首頁
-    .catch((error) => console.log(error));
-});
+
 
 app.get("/restaurants/:id", (req, res) => {
   const id = req.params.id;
@@ -90,6 +105,8 @@ app.get("/restaurants/:id/edit", (req, res) => {
     .catch((error) => console.log(error));
 });
 
+
+
 app.post("/restaurants/:id/edit", (req, res) => {
   const id = req.params.id;
   const name = req.body.name;
@@ -104,12 +121,8 @@ app.post("/restaurants/:id/edit", (req, res) => {
 
 
 
-app.use(bodyParser.urlencoded({ extended: true }));
 
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
 
-// start and listen on the Express server
 app.listen(port, () => {
   console.log(`Express is listening on localhost:${port}`);
 });
