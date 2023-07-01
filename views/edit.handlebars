@@ -1,4 +1,5 @@
-<form action="/restaurants/{{ restaurant._id }}/edit" method="POST">
+
+<form action="/restaurants/{{ restaurant._id }}?_method=PUT" method="POST">
 <input type="checkbox" name="isDone" {{#if restaurant.isDone}} checked {{/if}}>
   <input type="text" placeholder="name" name="name" value="{{ restaurant.name }}">
   <button type="submit">Save</button>

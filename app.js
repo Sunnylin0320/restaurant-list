@@ -57,6 +57,7 @@ app.use(methodOverride("_method"));
 app.get("/", (req, res) => {
   Restaurant.find() // 取出 Restaurant model 裡的所有資料
     .lean() // 把 Mongoose 的 Model 物件轉換成乾淨的 JavaScript 資料陣列
+    .sort({ _id: "asc" }) // desc
     .then((restaurants) => res.render("index", { restaurants })) // 將資料傳給 index 樣板
     .catch((error) => console.error(error));
 });
@@ -109,7 +110,7 @@ app.get("/restaurants/:id/edit", (req, res) => {
 
 
 //edit 功能
-app.post("/restaurants/:id/edit", (req, res) => {
+app.put("/restaurants/:id", (req, res) => {
   const id = req.params.id;
   const { name, isDone } = req.body;
   return Restaurant.findById(id)
@@ -123,7 +124,7 @@ app.post("/restaurants/:id/edit", (req, res) => {
 });
 
 //delete路由
-app.post("/restaurants/:id/delete", (req, res) => {
+app.delete("/restaurants/:id", (req, res) => {
   const id = req.params.id;
   return Restaurant.findById(id)
     .then((restaurant) => restaurant.remove())

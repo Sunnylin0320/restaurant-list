@@ -1,6 +1,6 @@
 <h1 class="mb-1 restaurant-show-title">{{restaurant.name}}</h1>
 <a href="/restaurants/{{ restaurant._id }}/edit">edit</a><!-- 加入這行 -->
-<form action="/restaurants/{{ restaurant._id }}/delete" method="POST" style="display: inline;">
+<form action="/restaurants/{{ restaurant._id }}?_method=DELETE" method="POST" style="display: inline;">
   <button type="submit">delete</button>
   <input type="checkbox" name="isDone" {{#if restaurant.isDone }} checked {{/if}} disabled>
 </form>
