@@ -1,4 +1,3 @@
-const mongoose = require('mongoose')
 //載入restaurant model
 const Restaurant = require("../restaurant");
 const seed = require("../../restaurant.json")
@@ -6,15 +5,10 @@ const seed = require("../../restaurant.json")
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
-const restaurantList = require("../../restaurant.json").results;
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 
-const db = mongoose.connection
-db.on('error', () => {
-  console.log('mongodb error!')
-})
+const db = require("../../config/mongoose");
 db.once("open", () => {
-  console.log("mongodb connected!");
+  
   for (let i = 0; i < seed.results.length; i++) {
     Restaurant.create({
       name: `${seed.results[i].name}`,
