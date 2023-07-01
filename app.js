@@ -111,10 +111,11 @@ app.get("/restaurants/:id/edit", (req, res) => {
 //edit 功能
 app.post("/restaurants/:id/edit", (req, res) => {
   const id = req.params.id;
-  const name = req.body.name;
+  const { name, isDone } = req.body;
   return Restaurant.findById(id)
     .then((restaurant) => {
       restaurant.name = name;
+      restaurant.isDone = isDone === "on";
       return restaurant.save();
     })
     .then(() => res.redirect(`/restaurants/${id}`))
@@ -129,7 +130,6 @@ app.post("/restaurants/:id/delete", (req, res) => {
     .then(() => res.redirect("/"))
     .catch((error) => console.log(error));
 });
-
 
 
 

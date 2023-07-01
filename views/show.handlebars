@@ -2,6 +2,7 @@
 <a href="/restaurants/{{ restaurant._id }}/edit">edit</a><!-- 加入這行 -->
 <form action="/restaurants/{{ restaurant._id }}/delete" method="POST" style="display: inline;">
   <button type="submit">delete</button>
+  <input type="checkbox" name="isDone" {{#if restaurant.isDone }} checked {{/if}} disabled>
 </form>
 <div class="container">
   <div class="row">

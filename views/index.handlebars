@@ -21,10 +21,13 @@
   <div class="row">
     {{#each restaurants}}
       <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        
         <a href="/restaurants/{{this.id}}" class="text-secondary">
           <div class="card">
             <img class="card-img-top" src="{{this.image}}" alt="Card image cap">
             <div class="card-body restaurant-item-body">
+              <input type="checkbox" name="isDone" {{#if this.isDone }} checked {{/if}} disabled>
+          
               <h6 class="card-title">{{this.name}}</h6>
             </div>
           </div>
