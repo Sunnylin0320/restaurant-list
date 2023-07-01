@@ -10,8 +10,7 @@ const seed = require("./restaurant.json");
 handlebars.registerHelper("eq", function (a, b) {
   return a === b;
 });
-
-const Restaurant = require("./models/restaurant");
+const routes = require("./routes");
 const app = express();
 
 
@@ -52,88 +51,10 @@ app.use(methodOverride("_method"));
 
 
 
-// routes setting
-//設定index首頁路由
-app.get("/", (req, res) => {
-  Restaurant.find() // 取出 Restaurant model 裡的所有資料
-    .lean() // 把 Mongoose 的 Model 物件轉換成乾淨的 JavaScript 資料陣列
-    .sort({ _id: "asc" }) // desc
-    .then((restaurants) => res.render("index", { restaurants })) // 將資料傳給 index 樣板
-    .catch((error) => console.error(error));
-});
-
-//搜尋功能
-app.get("/search", (req, res) => {
-  const keyword = req.query.keyword;
-  const restaurants = seed.results.filter((restaurant) => {
-    return restaurant.name.toLowerCase().includes(keyword.toLowerCase());
-  });
-  res.render("index", { restaurants: restaurants, keyword: keyword });
-});
-
-
-//Create Route
-app.get("/restaurants/new", (req, res) => {
-  return res.render("new");
-});
-//Create 功能：資料庫新增資料
-
-app.post("/restaurants", (req, res) => {
-  const name = req.body.name; // 從 req.body 拿出表單裡的 name 資料
-  return Restaurant.create({ name })
-    .then(() => res.redirect("/"))
-    .catch((err) => console.log(err));
-});
-
-
-//show Route
-app.get("/restaurants/:id", (req, res) => {
-  const id = req.params.id;
-  return Restaurant.findById(id)
-    .lean()
-    .then((restaurant) => res.render("show", { restaurant }))
-    .catch((error) => console.log(error));
-});
 
 
 
-
-
-// edit Route
-app.get("/restaurants/:id/edit", (req, res) => {
-  const id = req.params.id;
-  return Restaurant.findById(id)
-    .lean()
-    .then((restaurant) => res.render("edit", { restaurant }))
-    .catch((error) => console.log(error));
-});
-
-
-//edit 功能
-app.put("/restaurants/:id", (req, res) => {
-  const id = req.params.id;
-  const { name, isDone } = req.body;
-  return Restaurant.findById(id)
-    .then((restaurant) => {
-      restaurant.name = name;
-      restaurant.isDone = isDone === "on";
-      return restaurant.save();
-    })
-    .then(() => res.redirect(`/restaurants/${id}`))
-    .catch((error) => console.log(error));
-});
-
-//delete路由
-app.delete("/restaurants/:id", (req, res) => {
-  const id = req.params.id;
-  return Restaurant.findById(id)
-    .then((restaurant) => restaurant.remove())
-    .then(() => res.redirect("/"))
-    .catch((error) => console.log(error));
-});
-
-
-
+app.use(routes);
 
 app.listen(port, () => {
   console.log(`Express is listening on localhost:${port}`);
