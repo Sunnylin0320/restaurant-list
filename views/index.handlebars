@@ -10,6 +10,7 @@
           <input type="text" name="keyword" class="form-control" placeholder="輸入餐廳、分類" aria-label="Restaurant Name..." value="" aria-describedby="search-button">
           <div class="input-group-append">
             <button class="btn btn-major" type="submit" id="search-button"><i class="fas fa-search"></i></button>
+
           </div>
         </div>
       </form>
@@ -17,11 +18,12 @@
   </div>
 </div>
 
+
   <!-- restaurant list -->
   <div class="row">
+
     {{#each restaurants}}
       <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-        
         <a href="/restaurants/{{this.id}}" class="text-secondary">
           <div class="card">
             <img class="card-img-top" src="{{this.image}}" alt="Card image cap">
@@ -41,9 +43,6 @@
           </form>
         </div>
       </div>
-      {{#if (eq @index 3)}} <!-- 每列四個餐廳 -->
-        </div><div class="row">
-      {{/if}}
     {{/each}}
   </div>
-</div>
+

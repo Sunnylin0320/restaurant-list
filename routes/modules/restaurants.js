@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-
 const Restaurant = require("../../models/restaurant");
 
 router.get("/new", (req, res) => {
@@ -15,6 +14,8 @@ router.post("/", (req, res) => {
     .then(() => res.redirect("/"))
     .catch((error) => console.log(error));
 });
+
+
 
 router.get("/:id", (req, res) => {
   const id = req.params.id;
@@ -49,7 +50,7 @@ router.put("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   const id = req.params.id;
   return Restaurant.findById(id)
-    .then((restaurant) => todo.remove())
+    .then((restaurant) => restaurant.remove())
     .then(() => res.redirect("/"))
     .catch((error) => console.log(error));
 });

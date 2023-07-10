@@ -14,14 +14,12 @@ const restaurantSchema = new Schema({
   },
   category: {
     type: String,
-    required: true,
   },
   image: {
     type: String,
   },
   location: {
     type: String,
-    required: true,
   },
   phone: {
     type: String,
@@ -34,7 +32,6 @@ const restaurantSchema = new Schema({
   },
   description: {
     type: String,
-    required: true,
   }
 });
 module.exports = mongoose.model("Restaurant", restaurantSchema);
