@@ -5,9 +5,9 @@ const restaurantSchema = new Schema({
     type: String, // 資料型別是字串
     required: true, // 這是個必填欄位
   },
-   isDone: { 
-    type: Boolean,              
-    default: false  // 預設完成狀態為 false
+  isDone: {
+    type: Boolean,
+    default: false, // 預設完成狀態為 false
   },
   name_en: {
     type: String,
@@ -32,6 +32,12 @@ const restaurantSchema = new Schema({
   },
   description: {
     type: String,
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    index: true,
+    required: true,
   }
 });
 module.exports = mongoose.model("Restaurant", restaurantSchema);

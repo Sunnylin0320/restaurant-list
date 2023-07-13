@@ -11,6 +11,7 @@ handlebars.registerHelper("eq", function (a, b) {
   return a === b;
 });
 const routes = require("./routes");
+const usePassport = require("./config/passport");
 
 require("./config/mongoose");
 
@@ -41,7 +42,7 @@ app.use((req, res, next) => {
   next();
 });
 
-
+usePassport(app);
 app.use(routes);
 
 app.listen(3000, () => {
