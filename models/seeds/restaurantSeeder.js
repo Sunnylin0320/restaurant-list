@@ -1,26 +1,74 @@
-//載入restaurant model
-const Restaurant = require("../restaurant");
-const seed = require("../../restaurant.json")
+const restaurantList = require('../../restaurant.json')
+const Restaurant = require('../restaurant')
+const User = require('../user')
+const db = require("../../config/mongoose");
 
+const bcrypt = require('bcryptjs')
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
-const db = require("../../config/mongoose");
-db.once("open", () => {
-  
-  for (let i = 0; i < seed.results.length; i++) {
-    Restaurant.create({
-      name: `${seed.results[i].name}`,
-      name_en: `${seed.results[i].name_en}`,
-      category: `${seed.results[i].category}`,
-      image: `${seed.results[i].image}`,
-      location: `${seed.results[i].location}`,
-      phone: `${seed.results[i].phone}`,
-      google_map: `${seed.results[i].google_map}`,
-      rating: `${seed.results[i].rating}`,
-      description: `${seed.results[i].description}`,
-    });
-  }
-  console.log("done");
+const SEED_USER_01 = {
+  email: 'user1@example.com',
+  password: '12345678',
+  restaurantOwns: [1, 2, 3], //陣列內容為restaurant的id
+}
+const SEED_USER_02 = {
+  email: 'user2@example.com',
+  password: '12345678',
+  restaurantOwns: [4, 5, 6],
+}
+
+db.once('open', () => {
+
+bcrypt
+    .genSalt(10)
+    .then(salt => bcrypt.hash(SEED_USER_01.password, salt))
+    .then(hash =>
+      User.create({
+        email: SEED_USER_01.email,
+        password: hash,
+      })
+    )
+    .then(user => {
+      const userId = user._id
+      return Promise.all(
+        Array.from({ length: SEED_USER_01.restaurantOwns.length }, (_, i) =>
+          Restaurant.create({
+            ...restaurantList.results[SEED_USER_01.restaurantOwns[i]],
+            userId,
+          })
+        )
+      )
+    })
+    .then(() => {
+      console.log('User1 is done.')
+      //process.exit()
+    })
+
+  bcrypt
+    .genSalt(10)
+    .then(salt => bcrypt.hash(SEED_USER_02.password, salt))
+    .then(hash =>
+      User.create({
+        email: SEED_USER_02.email,
+        password: hash,
+      })
+    )
+    .then(user => {
+      const userId = user._id
+      return Promise.all(
+        Array.from({ length: SEED_USER_02.restaurantOwns.length }, (_, i) =>
+          Restaurant.create({
+            ...restaurantList.results[SEED_USER_02.restaurantOwns[i]],
+            userId,
+          })
+        )
+      )
+    })
+    .then(() => {
+    console.log('User2 is done.')
+      process.exit()
+    })
 });
+

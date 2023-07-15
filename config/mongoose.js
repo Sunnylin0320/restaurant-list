@@ -2,7 +2,7 @@
 const mongoose = require("mongoose");
 
 mongoose.set("useFindAndModify", false);
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = "mongodb+srv://alpha:camp@cluster0.7w5mopc.mongodb.net/restaurant-list?retryWrites=true&w=majority";
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
