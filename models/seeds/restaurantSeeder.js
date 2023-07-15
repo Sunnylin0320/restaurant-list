@@ -1,74 +1,64 @@
-const restaurantList = require('../../restaurant.json')
-const Restaurant = require('../restaurant')
-const User = require('../user')
-const db = require("../../config/mongoose");
-
-const bcrypt = require('bcryptjs')
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
+const bcrypt = require("bcryptjs");
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
 }
+const Restaurant = require("../restaurant");
+const User = require("../user");
+const db = require("../../config/mongoose");
+const restaurantList = require("./restaurant.json").results;
 
 const SEED_USER_01 = {
-  email: 'user1@example.com',
-  password: '12345678',
-  restaurantOwns: [1, 2, 3], //陣列內容為restaurant的id
-}
+  name: 'user1',
+  email: "user1@example.com",
+  password: "12345678",
+  restaurantOwns: [0, 1, 2],
+};
 const SEED_USER_02 = {
-  email: 'user2@example.com',
-  password: '12345678',
-  restaurantOwns: [4, 5, 6],
-}
+  name: 'user2',
+  email: "user2@example.com",
+  password: "12345678",
+  restaurantOwns: [3, 4, 5],
+};
 
-db.once('open', () => {
-
-bcrypt
-    .genSalt(10)
-    .then(salt => bcrypt.hash(SEED_USER_01.password, salt))
-    .then(hash =>
-      User.create({
-        email: SEED_USER_01.email,
-        password: hash,
-      })
-    )
-    .then(user => {
-      const userId = user._id
-      return Promise.all(
-        Array.from({ length: SEED_USER_01.restaurantOwns.length }, (_, i) =>
-          Restaurant.create({
-            ...restaurantList.results[SEED_USER_01.restaurantOwns[i]],
-            userId,
-          })
-        )
-      )
-    })
-    .then(() => {
-      console.log('User1 is done.')
-      //process.exit()
-    })
-
+db.once("open", () => {
   bcrypt
     .genSalt(10)
-    .then(salt => bcrypt.hash(SEED_USER_02.password, salt))
-    .then(hash =>
-      User.create({
-        email: SEED_USER_02.email,
-        password: hash,
-      })
+    .then((salt) => bcrypt.hash(SEED_USER_01.password, salt))
+    .then((hash) =>
+      User.create([
+        {
+          name: SEED_USER_01.name,
+          email: SEED_USER_01.email,
+          password: hash,
+        },
+        {
+          name: SEED_USER_02.name,
+          email: SEED_USER_02.email,
+          password: hash,
+        },
+      ])
     )
-    .then(user => {
-      const userId = user._id
-      return Promise.all(
-        Array.from({ length: SEED_USER_02.restaurantOwns.length }, (_, i) =>
-          Restaurant.create({
-            ...restaurantList.results[SEED_USER_02.restaurantOwns[i]],
-            userId,
-          })
-        )
-      )
-    })
-    .then(() => {
-    console.log('User2 is done.')
-      process.exit()
-    })
-});
+    .then((user) => {
+      const restaurantUser1 = [];
+      for (let i = 0; i < 3; i++) {
+        const userId = user[0]._id;
+        restaurantList[i].userId = userId;
+        restaurantUser1.push(restaurantList[i]);
+      }
+      const restaurantUser2 = [];
+      for (let i = 3; i < 6; i++) {
+        const userId = user[1]._id;
+        restaurantList[i].userId = userId;
+        restaurantUser2.push(restaurantList[i]);
+      }
+      const restaurant = restaurantUser1.concat(restaurantUser2);
 
+      return Restaurant.create(restaurant);
+    })
+
+    .then(() => {
+      console.log("done.");
+      process.exit();
+    });
+
+  })
