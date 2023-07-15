@@ -1,7 +1,14 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+require("./config/mongoose");
+
+
 const express = require("express");
 const session = require("express-session");
 const exphbs = require("express-handlebars");
 const app = express();
+const PORT = 3000;
 const methodOverride = require("method-override");
 const flash = require("connect-flash");
 const bodyParser = require("body-parser");
@@ -11,12 +18,8 @@ const seed = require("./restaurant.json");
 handlebars.registerHelper("eq", function (a, b) {
   return a === b;
 });
-const routes = require("./routes");
+const router = require("./routes");
 const usePassport = require("./config/passport");
-
-require("./config/mongoose");
-
-
 
 
 
@@ -35,12 +38,7 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
-
-
-
-
 usePassport(app);
-
 
 app.use(flash());
 
@@ -52,8 +50,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(routes);
+app.use(router);
 
-app.listen(3000, () => {
-  console.log("App is running on http://localhost:3000.");
+app.listen(PORT, () => {
+  console.log(`App is running on http://localhost:${PORT}`);
 });
