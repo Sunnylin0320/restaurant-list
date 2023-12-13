@@ -47,7 +47,7 @@
 
 將專案 clone 到本地
 
-https://github.com/RobertOu0213/3-A1
+https://github.com/Sunnylin0320/restaurant-list
 
 在本地開啟之後，透過終端機進入資料夾，輸入：
 
